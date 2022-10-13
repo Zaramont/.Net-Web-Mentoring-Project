@@ -1,0 +1,45 @@
+﻿@using Catalog.DAL.Entities
+@{
+    ViewData["Title"] = "Products";
+}
+@model List<Product>;
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Products table:</p>
+<table>
+    <thead>
+        <tr><th>ProductId</th>
+            <th>ProductName</th>
+            <th>QuantityPerUnit</th>
+            <th>ReorderLevel</th>
+            <th>UnitPrice</th>
+            <th>UnitsInStock</th>
+            <th>UnitsOnOrder</th>
+            <th>SupplierName</th>
+            <th>CategoryName</th>
+            <th>Change product</th>
+        </tr></thead>
+    <tbody>
+    
+    @foreach (var product in Model) 
+    {
+        <tr>            
+            <td>@product.ProductId</td>
+            <td>@product.ProductName</td>
+            <td>@product.QuantityPerUnit</td>
+            <td>@product.ReorderLevel</td>
+            <td>@product.UnitPrice</td>
+            <td>@product.UnitsInStock</td>
+            <td>@product.UnitsOnOrder</td>
+            <td>@product.Supplier.CompanyName</td>
+            <td>@product.Category.CategoryName</td>
+            <td>
+            <a asp-controller = "Home" asp-action = "Edit" 
+               asp-route-id = "@product.ProductId">Edit</a> 
+            </td>
+        </tr>
+    }
+   
+    </tbody>
+</table>
