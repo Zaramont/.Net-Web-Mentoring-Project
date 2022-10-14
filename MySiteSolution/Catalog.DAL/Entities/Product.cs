@@ -6,7 +6,7 @@ namespace Catalog.DAL.Entities
     public class Product
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductId { get; set; }
 
         [Required]
@@ -22,6 +22,7 @@ namespace Catalog.DAL.Entities
         [StringLength(20)]
         public string QuantityPerUnit { get; set; }
         public decimal UnitPrice { get; set; }
+        [Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }
         public short UnitsOnOrder { get; set; }
         public short ReorderLevel { get; set; }

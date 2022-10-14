@@ -31,7 +31,9 @@ namespace Catalog.DAL.Repositories
         }
         public virtual TEntity GetById(int id)
         {
-            return this.DbSet.Find(id);
+            var entity = this.DbSet.Find(id);
+            Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
         public void Delete(TEntity entity)
@@ -54,7 +56,6 @@ namespace Catalog.DAL.Repositories
         public void Update(TEntity entity)
         {
             var entityContext = Context.Entry(entity);
-            this.DbSet.Attach(entity);
             entityContext.State = EntityState.Modified;
             Context.SaveChanges();
 

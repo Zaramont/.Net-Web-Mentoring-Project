@@ -5,7 +5,8 @@
 @model List<Product>;
 
 <h1>@ViewData["Title"]</h1>
-
+<a asp-controller = "Products" asp-action = "CreateProduct" 
+               >Create a new product</a> 
 <p>Products table:</p>
 <table>
     <thead>
@@ -35,7 +36,7 @@
             <td>@product.Supplier.CompanyName</td>
             <td>@product.Category.CategoryName</td>
             <td>
-            <a asp-controller = "Home" asp-action = "Edit" 
+            <a asp-controller = "Products" asp-action = "EditProduct" 
                asp-route-id = "@product.ProductId">Edit</a> 
             </td>
         </tr>

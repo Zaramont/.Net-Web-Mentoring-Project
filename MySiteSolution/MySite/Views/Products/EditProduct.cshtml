@@ -17,7 +17,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="EditProduct">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ProductId" />
             <div class="form-group">
@@ -27,12 +27,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Category"></select>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SupplierId" class="control-label"></label>
-                <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
+                <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.Suppliers"></select>
                 <span asp-validation-for="SupplierId" class="text-danger"></span>
             </div>
             <div class="form-group">

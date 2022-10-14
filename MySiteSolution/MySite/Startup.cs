@@ -27,8 +27,10 @@ namespace MySite
                    c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<ICategoryRepository, CategoriesRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

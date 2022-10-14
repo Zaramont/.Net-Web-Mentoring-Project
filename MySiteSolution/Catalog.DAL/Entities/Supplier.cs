@@ -5,7 +5,7 @@ namespace Catalog.DAL.Entities
     public class Supplier
     {
         [Key]
-        public int SupplierID { get; set; }
+        public int SupplierId { get; set; }
         [Required]
         [StringLength(40)]
         public string CompanyName { get; set; }
