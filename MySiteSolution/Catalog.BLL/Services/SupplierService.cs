@@ -14,7 +14,7 @@ namespace Catalog.BLL.Services
         {
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
-        public IList<Supplier> GetSuppliers()
+        public IEnumerable<Supplier> GetSuppliers()
         {
             return supplierRepository.GetAll();
         }

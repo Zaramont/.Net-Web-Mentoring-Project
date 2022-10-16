@@ -15,7 +15,7 @@ namespace Catalog.DAL.Repositories
             catalogDBContext = context;
         }
 
-        public override IList<Product> GetAll()
+        public override IEnumerable<Product> GetAll()
         {
             var result = catalogDBContext.Products
                 .AsNoTracking()

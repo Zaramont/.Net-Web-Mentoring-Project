@@ -30,17 +30,22 @@ namespace Catalog.BLL.Services
             return product;
         }
 
-        public IList<Product> GetProducts(int limit)
+        public IList<Product> GetProducts(int pageSize)
+        {
+            return GetProducts(0, pageSize);
+        }
+
+        public IList<Product> GetProducts(int pageIndex, int pageSize)
         {
             var products = new List<Product>();
 
-            if (limit == 0)
+            if (pageSize == 0)
             {
                 products = productRepository.GetAll().ToList();
             }
-            else if (limit > 0)
+            else if (pageSize > 0)
             {
-                products = productRepository.GetAll().Take(limit).ToList();
+                products = productRepository.GetAll().Skip(pageIndex * pageSize).Take(pageSize).ToList();
             }
 
             return products;

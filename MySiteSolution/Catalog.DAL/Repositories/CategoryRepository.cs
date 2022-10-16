@@ -21,7 +21,7 @@ namespace Catalog.DAL.Repositories
             return result;
         }
 
-        public override IList<Category> GetAll()
+        public override IEnumerable<Category> GetAll()
         {
             var result = catalogDBContext.Categories.AsNoTracking().Include(x => x.Products).ToList();
             return result;

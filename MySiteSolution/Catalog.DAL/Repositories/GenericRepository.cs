@@ -25,9 +25,9 @@ namespace Catalog.DAL.Repositories
         private DbSet<TEntity> _dbSet;
 
 
-        public virtual IList<TEntity> GetAll()
+        public virtual IEnumerable<TEntity> GetAll()
         {
-            return this.DbSet.ToList();
+            return this.DbSet.AsEnumerable();
         }
         public virtual TEntity GetById(int id)
         {

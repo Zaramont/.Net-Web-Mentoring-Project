@@ -13,6 +13,7 @@ namespace MyCatalogSite.Controllers
         private readonly ICategoryService categoryService;
         private readonly IProductService productService;
         private readonly ISupplierService supplierService;
+        private int maxAmountOfProductsOnPage = 25;
 
         public ProductsController(ILogger<ProductsController> logger, ICategoryService categoryService, IProductService productService, ISupplierService supplierService)
         {
@@ -23,7 +24,7 @@ namespace MyCatalogSite.Controllers
         }
         public IActionResult Index()
         {
-            var products = productService.GetProducts(0);
+            var products = productService.GetProducts(maxAmountOfProductsOnPage);
             return View(products);
         }
 
@@ -63,6 +64,11 @@ namespace MyCatalogSite.Controllers
             return View(new Product());
         }
 
+        public IActionResult GenerateError()
+        {
+            productService.GetProductById(-11);
+            return StatusCode(500);
+        }
 
         [HttpPost]
         public IActionResult CreateProduct(Product input)
@@ -71,7 +77,7 @@ namespace MyCatalogSite.Controllers
             if (ModelState.IsValid)
             {
                 productService.AddProduct(input);
-                return RedirectToAction("Products");
+                return RedirectToAction("Index");
             }
             SetCategoriesAndSuppliersToViewBag();
 

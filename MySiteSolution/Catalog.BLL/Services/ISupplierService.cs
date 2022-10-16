@@ -7,6 +7,6 @@ namespace Catalog.BLL.Services
 {
     public interface ISupplierService
     {
-        IList<Supplier> GetSuppliers();
+        IEnumerable<Supplier> GetSuppliers();
     }
 }

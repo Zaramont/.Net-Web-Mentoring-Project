@@ -1,5 +1,6 @@
 ﻿using Catalog.BLL.Services;
 using Catalog.DAL.Entities;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -32,17 +33,24 @@ namespace MySite.Controllers
             return View();
         }
 
-        public IActionResult Categories()
+        public IActionResult GenerateError()
         {
-            var categories = categoryService.GetCategories();
-            return View(categories);
-        }
+            productService.GetProductById(-11);
+            return StatusCode(500);
+        }        
         
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exception =
+                HttpContext.Features.Get<IExceptionHandlerPathFeature>().Error;
+
+            var errorModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
+            errorModel.ExceptionMessage = exception.Message;
+
+            _logger.LogError($"Request ID: {errorModel.RequestId}{Environment.NewLine}{errorModel.ExceptionMessage} : {exception.StackTrace}");
+            return View(errorModel);
         }
         
     }
