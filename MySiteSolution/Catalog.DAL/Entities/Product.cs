@@ -9,8 +9,8 @@ namespace Catalog.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductId { get; set; }
 
-        [Required]
-        [StringLength(40)]
+        [Required(ErrorMessage = "Please enter product name.")]
+        [StringLength(40, ErrorMessage = "Maximum lenght of product name is 40 symbols.")]
         public string ProductName { get; set; }
 
         public int CategoryId { get; set; }
@@ -22,7 +22,7 @@ namespace Catalog.DAL.Entities
         [StringLength(20)]
         public string QuantityPerUnit { get; set; }
         public decimal UnitPrice { get; set; }
-        [Range(0, short.MaxValue)]
+        [Range(0, short.MaxValue, ErrorMessage = "Units in stock value can't be less than zero.")]
         public short UnitsInStock { get; set; }
         public short UnitsOnOrder { get; set; }
         public short ReorderLevel { get; set; }
