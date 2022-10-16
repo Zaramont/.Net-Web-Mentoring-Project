@@ -7,14 +7,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
+using System.Text;
 
 namespace MySite
 {
     public class Startup
     {
+        private readonly Serilog.ILogger _serilogLogger;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _serilogLogger = new LoggerConfiguration()
+                    .WriteTo.File(Configuration.GetValue<string>("LogFilePath"))
+                    .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -22,6 +31,10 @@ namespace MySite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddLogging(builder => {
+                builder.AddSerilog(_serilogLogger);
+            });
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<CatalogDataContext>(c =>
                    c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
@@ -34,7 +47,7 @@ namespace MySite
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -59,6 +72,22 @@ namespace MySite
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            WriteAdditionalInfoToLog();
+
+            void WriteAdditionalInfoToLog()
+            {
+                _serilogLogger.Information($"Additional information: application location - {AppDomain.CurrentDomain.BaseDirectory.ToString()}");
+                var sb = new StringBuilder();
+                var configValues = Configuration.AsEnumerable();
+                sb.AppendLine();
+                foreach (var item in configValues)
+                {
+                    sb.AppendLine($"{item.Key}: {item.Value}");
+                }
+                
+                _serilogLogger.Information($"Additional information: configValues - {sb.ToString()}");
+            }
         }
     }
 }
