@@ -1,0 +1,14 @@
+﻿@using Catalog.DAL.Entities
+@{
+    ViewData["Title"] = "Categories";
+}
+@model List<Category>;
+<h1>@ViewData["Title"]</h1>
+
+<p>Category list.</p>
+<ul>
+    @foreach (var item in Model) 
+    {
+      <li>@item.CategoryName - "@item.Description"</li>
+    }
+</ul>

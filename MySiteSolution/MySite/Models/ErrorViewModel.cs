@@ -1,5 +1,3 @@
-using System;
-
 namespace MySite.Models
 {
     public class ErrorViewModel
@@ -7,5 +5,6 @@ namespace MySite.Models
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public string? ExceptionMessage { get; set; }
     }
 }
