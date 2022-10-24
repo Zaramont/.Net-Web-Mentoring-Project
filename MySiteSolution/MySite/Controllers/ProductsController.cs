@@ -18,9 +18,9 @@ namespace MyCatalogSite.Controllers
         public ProductsController(ILogger<ProductsController> logger, ICategoryService categoryService, IProductService productService, ISupplierService supplierService)
         {
             _logger = logger;
-            this.categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
-            this.productService = productService ?? throw new ArgumentNullException(nameof(productService));
-            this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
+            this.categoryService = categoryService;
+            this.productService = productService;
+            this.supplierService = supplierService;
         }
         public IActionResult Index()
         {
