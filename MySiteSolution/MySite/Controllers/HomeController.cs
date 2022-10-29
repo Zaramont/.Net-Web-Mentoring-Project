@@ -6,7 +6,7 @@ using MySite.Models;
 using System;
 using System.Diagnostics;
 
-namespace MySite.Controllers
+namespace MyCatalogSite.Controllers
 {
     public class HomeController : Controller
     {

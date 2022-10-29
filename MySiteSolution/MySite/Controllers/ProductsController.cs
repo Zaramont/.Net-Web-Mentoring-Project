@@ -2,22 +2,18 @@
 using Catalog.DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace MyCatalogSite.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly ILogger<ProductsController> _logger;
         private readonly ICategoryService categoryService;
         private readonly IProductService productService;
         private readonly ISupplierService supplierService;
         private int maxAmountOfProductsOnPage = 25;
 
-        public ProductsController(ILogger<ProductsController> logger, ICategoryService categoryService, IProductService productService, ISupplierService supplierService)
+        public ProductsController(ICategoryService categoryService, IProductService productService, ISupplierService supplierService)
         {
-            _logger = logger;
             this.categoryService = categoryService;
             this.productService = productService;
             this.supplierService = supplierService;
@@ -50,7 +46,7 @@ namespace MyCatalogSite.Controllers
             if (product != null && ModelState.IsValid)
             {
                 productService.UpdateProduct(input);
-                return RedirectToAction("Products");
+                return RedirectToAction("Index");
             }
             SetCategoriesAndSuppliersToViewBag();
 
