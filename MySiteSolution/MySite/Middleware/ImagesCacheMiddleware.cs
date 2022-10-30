@@ -6,24 +6,42 @@ using System.Threading.Tasks;
 
 namespace MyCatalogSite.Middleware
 {
+    public class ImagesCacheOptions
+    {
+        private const string DefaultCacheFolder = "cache";
+        private const ushort DefaultImagesCount = 25;
+        private const ushort DefaultExpirationTime = 60;
+        public ImagesCacheOptions()
+        {
+            CacheFolder = Path.Combine(Environment.CurrentDirectory, DefaultCacheFolder);
+            MaxImagesCount = DefaultImagesCount;
+            ExpirationTimeInSeconds = DefaultExpirationTime;
+        }
+        public string CacheFolder { get; set; }
+        public ushort MaxImagesCount { get; set; }
+        public ushort ExpirationTimeInSeconds { get; set; }
+    }
+
     public class ImagesCacheMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly object _cacheService;
-        private readonly string _cacheFolder = Path.Combine(Environment.CurrentDirectory, "cache");
 
-        public ImagesCacheMiddleware(RequestDelegate next)
+        private readonly RequestDelegate _next;
+        private readonly ImagesCacheOptions _options;
+
+        public ImagesCacheMiddleware(RequestDelegate next, ImagesCacheOptions options)
         {
             this._next = next;
-            Directory.CreateDirectory(_cacheFolder);
+            this._options = options;
         }
 
         public async Task Invoke(HttpContext context)
         {
+        //TODO add support for maxImages and expirationTime
+        //refactor the method
+            Directory.CreateDirectory(_options.CacheFolder);
             string imageId = context.Request.RouteValues["id"].ToString();
-            string pathToFile = Path.Combine(_cacheFolder, imageId + ".bmp");
+            string pathToFile = Path.Combine(_options.CacheFolder, imageId + ".bmp");
 
-            Stream originalBody = context.Response.Body;
 
             if (File.Exists(pathToFile))
             {
@@ -31,13 +49,13 @@ namespace MyCatalogSite.Middleware
 
                 using (var stream = new MemoryStream(image))
                 {
-                    await stream.CopyToAsync(originalBody);
                     context.Response.ContentType = "image/bmp";
-                    context.Response.StatusCode = 200;
+                    await stream.CopyToAsync(context.Response.Body);
                     return;
                 }
             }
 
+            Stream originalBody = context.Response.Body;
             try
             {
                 using (var swappedResponseStream = new MemoryStream())
@@ -46,7 +64,9 @@ namespace MyCatalogSite.Middleware
 
                     await _next(context);
 
-                    if (context.Response.ContentType == "image/bmp")
+                    if (context.Request.Method == HttpMethods.Get &&
+                        context.Response.StatusCode == 200 &&
+                        context.Response.ContentType == "image/bmp")
                     {
                         swappedResponseStream.Position = 0;
                         var responseBody = swappedResponseStream.ToArray();
@@ -56,7 +76,6 @@ namespace MyCatalogSite.Middleware
                         await swappedResponseStream.CopyToAsync(originalBody);
                     }
                 }
-
             }
             finally
             {
@@ -68,9 +87,12 @@ namespace MyCatalogSite.Middleware
     public static class ImagesCacheMiddlewareExtensions
     {
         public static IApplicationBuilder UseImagesCache(
-            this IApplicationBuilder builder)
+            this IApplicationBuilder builder, Action<ImagesCacheOptions> configureOptions)
         {
-            return builder.UseMiddleware<ImagesCacheMiddleware>();
+            var options = new ImagesCacheOptions();
+            configureOptions(options);
+
+            return builder.UseMiddleware<ImagesCacheMiddleware>(options);
         }
     }
 

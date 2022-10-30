@@ -3,6 +3,7 @@ using Catalog.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MyCatalogSite.Filters;
 using MyCatalogSite.Models;
 using System;
 using System.IO;
@@ -10,6 +11,7 @@ using System.Linq;
 
 namespace MyCatalogSite.Controllers
 {
+    [ServiceFilter(typeof(LogActionFilter))]
     public class CategoriesController : Controller
     {
         byte skipBytes = 78;
@@ -32,7 +34,6 @@ namespace MyCatalogSite.Controllers
         {
             var category = categoryService.GetCategoryById(id);
             var image = category.Picture.Skip(skipBytes).ToArray();
-            //System.IO.File.WriteAllBytes(Environment.CurrentDirectory + "/" + id+".bmp", image);
             return base.File(image, "image/bmp");
         }
 

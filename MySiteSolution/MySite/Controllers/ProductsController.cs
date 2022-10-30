@@ -2,9 +2,11 @@
 using Catalog.DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MyCatalogSite.Filters;
 
 namespace MyCatalogSite.Controllers
 {
+    [ServiceFilter(typeof(LogActionFilter))]
     public class ProductsController : Controller
     {
         private readonly ICategoryService categoryService;
