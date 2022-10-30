@@ -1,0 +1,18 @@
+﻿@using MyCatalogSite.Models
+@model FileUploadModel
+
+@{
+    <form asp-action="UploadImage" enctype="multipart/form-data" method="post">
+    <dl>
+        <dt>
+            <label asp-for="FormFile"></label>
+        </dt>
+        <dd>
+            <input asp-for="FormFile" type="file" accept=".bmp">
+            <span asp-validation-for="FormFile"></span>
+        </dd>
+    </dl>
+    <input class="btn" type="submit" value="Upload" />
+</form>
+
+}

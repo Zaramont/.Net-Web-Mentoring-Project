@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Text;
+using MyCatalogSite.Middleware;
 
 namespace MySite
 {
@@ -63,11 +64,19 @@ namespace MySite
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
+
+            app.UseWhen(context => context.Request.Path.ToString().StartsWith("/Categories/Image/", StringComparison.OrdinalIgnoreCase), appBuilder =>
+            {
+                appBuilder.UseImagesCache();
+            });
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(name: "images",
+                pattern: "images/{id:int:min(1)}",
+                defaults: new { controller = "Categories", action = "Image" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

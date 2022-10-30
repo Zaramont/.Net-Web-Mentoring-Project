@@ -5,10 +5,18 @@
 @model List<Category>;
 <h1>@ViewData["Title"]</h1>
 
+
 <p>Category list.</p>
 <ul>
-    @foreach (var item in Model) 
+    @foreach (var category in Model) 
     {
-      <li>@item.CategoryName - "@item.Description"</li>
+      <li class="d-flex">
+          <div><img src="~/Categories/Image/@category.CategoryId" class="img-thumbnail" /></div>
+          <div class="ml-4">
+              <p>@category.CategoryName - "@category.Description"</p>
+              <a asp-controller = "Categories" asp-action = "UploadImage" 
+               asp-route-id = "@category.CategoryId">Upload/Change Image</a>
+          </div>
+      </li>
     }
 </ul>
