@@ -32,7 +32,6 @@ namespace MyCatalogSite.Controllers
             return StatusCode(500);
         }
 
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
