@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Text;
+using MyCatalogSite.Middleware;
+using MyCatalogSite.Filters;
 
 namespace MySite
 {
@@ -44,6 +46,7 @@ namespace MySite
             services.AddScoped<ICategoryRepository, CategoriesRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();
+            services.AddScoped<LogActionFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,11 +66,22 @@ namespace MySite
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
+
+            app.UseWhen(context => context.Request.Path.ToString().StartsWith("/Categories/Image/", StringComparison.OrdinalIgnoreCase), appBuilder =>
+            {
+                appBuilder.UseImagesCache(options =>
+                {
+                    options.MaxImagesCount = 10;
+                });
+            });
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(name: "images",
+                pattern: "images/{id:int:min(1)}",
+                defaults: new { controller = "Categories", action = "Image" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
