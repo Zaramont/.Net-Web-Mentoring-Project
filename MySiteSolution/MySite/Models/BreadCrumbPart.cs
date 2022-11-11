@@ -1,6 +1,6 @@
 ﻿namespace MyCatalogSite.Models
 {
-    public class BreadCrumbPart
+    public class BreadCrumbsPart
     {
         public string Text { get; set; }
         public string RelativePath  { get; set; }
