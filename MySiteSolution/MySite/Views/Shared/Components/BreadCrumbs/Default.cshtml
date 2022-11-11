@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MyCatalogSite.Models.BreadCrumbPart>
+
+@foreach (var part in Model)
+{
+    if(part.IsLastPart)
+    {
+        <span>@part.Text</span>
+    }
+    else
+    {
+        <a href="@part.RelativePath">@part.Text</a>
+        <i class="bi bi-chevron-right"></i>
+    }
+}
