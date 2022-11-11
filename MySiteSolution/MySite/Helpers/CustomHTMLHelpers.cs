@@ -10,9 +10,5 @@ namespace MyCatalogSite.Helpers
         {
             return new HtmlString($"<a href=\"/images/{id}\">{linkName}</a>");
         }
-
-        /*public static String HelloWorldString(this IHtmlHelper htmlHelper)
-            => "<strong>Hello World</strong>";*/
-
     }
 }
