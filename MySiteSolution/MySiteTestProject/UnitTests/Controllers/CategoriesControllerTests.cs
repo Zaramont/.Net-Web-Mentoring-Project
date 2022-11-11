@@ -16,11 +16,10 @@ namespace MySiteTestProject.UnitTests.Controllers
         public void Index_ReturnsAViewResult_WithAListOfCategories()
         {
             // Arrange
-            var logger = new Mock<ILogger<CategoriesController>>();
             var mockCategoryService = new Mock<ICategoryService>();
             mockCategoryService.Setup(repo => repo.GetCategories())
                     .Returns(GetTestCategories());
-            var controller = new CategoriesController(logger.Object, mockCategoryService.Object);
+            var controller = new CategoriesController(mockCategoryService.Object);
 
             // Act
             var result = controller.Index();
@@ -34,18 +33,18 @@ namespace MySiteTestProject.UnitTests.Controllers
 
         private IList<Category> GetTestCategories()
         {
-            var categories = new List<Category>();
-            categories.Add(new Category()
-            {
-                CategoryId = 1,
-                CategoryName = "Test One"
-            });
-            categories.Add(new Category()
-            {
-                CategoryId = 2,
-                CategoryName = "Test Two"
-            });
-            return categories;
+            return new List<Category> {
+                new Category
+                {
+                    CategoryId = 1,
+                    CategoryName = "Test One"
+                },
+                new Category
+                {
+                    CategoryId = 2,
+                    CategoryName = "Test Two"
+                }
+            };
         }
     }
 }

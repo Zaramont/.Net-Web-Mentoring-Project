@@ -40,21 +40,21 @@ namespace MySiteTestProject.UnitTests.Controllers
             Mock<IProductService> mockProductService = new Mock<IProductService>();
             Mock<ISupplierService> mockSupplierService = new Mock<ISupplierService>();
 
-            mockCategoryService.Setup(repo => repo.GetCategories()).Returns(() => {
-                var list = new List<Category>();
-                list.Add(new Mock<Category>().Object);
-
-                return list;
+            mockCategoryService.Setup(repo => repo.GetCategories()).Returns(() =>
+            {
+                return new List<Category> {
+                    new Mock<Category>().Object
+                };
             });
-            mockSupplierService.Setup(repo => repo.GetSuppliers()).Returns(() => {
-                var list = new List<Supplier>();
-                list.Add(new Mock<Supplier>().Object);
-
-                return list;
+            mockSupplierService.Setup(repo => repo.GetSuppliers()).Returns(() =>
+            {
+                return new List<Supplier> {
+                    new Mock<Supplier>().Object
+                };
             });
 
             var controller = new ProductsController(mockCategoryService.Object, mockProductService.Object, mockSupplierService.Object);
-            
+
             // Act
             var result = controller.CreateProduct();
 
@@ -154,28 +154,28 @@ namespace MySiteTestProject.UnitTests.Controllers
 
         private IList<Product> GetTestProducts()
         {
-            var products = new List<Product>();
-            products.Add(new Product()
-            {
-                ProductId = 1,
-                ProductName = "Test product 1",
-                ReorderLevel = 10,
-                UnitPrice = 10.40M,
-                UnitsInStock = 1000,
-                CategoryId = 1,
-                SupplierId = 1,
-            });
-            products.Add(new Product()
-            {
-                ProductId = 2,
-                ProductName = "Test product 2",
-                ReorderLevel = 20,
-                UnitPrice = 22,
-                UnitsInStock = 1500,
-                CategoryId = 2,
-                SupplierId = 2,
-            });
-            return products;
+            return new List<Product> {
+                new Product
+                {
+                    ProductId = 1,
+                    ProductName = "Test product 1",
+                    ReorderLevel = 10,
+                    UnitPrice = 10.40M,
+                    UnitsInStock = 1000,
+                    CategoryId = 1,
+                    SupplierId = 1,
+                },
+                new Product
+                {
+                    ProductId = 2,
+                    ProductName = "Test product 2",
+                    ReorderLevel = 20,
+                    UnitPrice = 22,
+                    UnitsInStock = 1500,
+                    CategoryId = 2,
+                    SupplierId = 2,
+                }
+            };
         }
     }
 }
