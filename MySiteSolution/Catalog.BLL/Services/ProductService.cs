@@ -14,9 +14,10 @@ namespace Catalog.BLL.Services
             this.productRepository = productRepository;
         }
 
-        public void AddProduct(Product entity)
+        public Product AddProduct(Product entity)
         {
             productRepository.Create(entity);
+            return GetProductById(entity.ProductId);
         }
 
         public void DeleteProduct(int id)

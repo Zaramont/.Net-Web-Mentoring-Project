@@ -26,9 +26,10 @@ namespace Catalog.BLL.Services
             return categoryFromDb;
         }
 
-        public void AddCategory(Category entity)
+        public Category AddCategory(Category entity)
         {
             categoryRepository.Create(entity);
+            return GetCategoryById(entity.CategoryId);
         }
 
         public void DeleteCategory(int id)
