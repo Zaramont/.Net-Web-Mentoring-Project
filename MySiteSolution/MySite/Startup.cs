@@ -47,6 +47,7 @@ namespace MySite
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<LogActionFilter>();
+            services.AddSwaggerDocument();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +65,9 @@ namespace MySite
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseRouting();
             app.UseAuthorization();

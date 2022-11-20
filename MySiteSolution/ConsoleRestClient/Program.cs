@@ -1,8 +1,8 @@
 ﻿using Catalog.BLL.Models;
+using CategoriesProducstApiRestTest;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace HttpClientSample
                 $"{product.UnitPrice}");
         }
 
-        
+
         static void ShowCategory(Category category)
         {
             Console.WriteLine($"CategoryName: {category.CategoryName}\tDetails: " +
@@ -37,7 +37,7 @@ namespace HttpClientSample
             }
             return content;
         }
-        
+
         public static void Main()
         {
             RunAsync().GetAwaiter().GetResult();
@@ -62,6 +62,16 @@ namespace HttpClientSample
                 Console.WriteLine("Categories:");
                 var categories = await GetItemsAsync<Category>("api/v1/categories");
                 foreach (var category in categories)
+                {
+                    ShowCategory(category);
+                }
+
+                var client1 = new CategoriesApiClient();
+
+                Console.WriteLine("Categories using generated code:");
+                var result = client1.GetCategories().Content.ToString();
+                var categoriesByGenerated = JsonConvert.DeserializeObject<IEnumerable<Category>>(result);
+                foreach (var category in categoriesByGenerated)
                 {
                     ShowCategory(category);
                 }

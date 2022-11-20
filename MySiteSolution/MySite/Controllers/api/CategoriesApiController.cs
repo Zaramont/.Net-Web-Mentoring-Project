@@ -1,5 +1,6 @@
 ﻿using Catalog.BLL.Models;
 using Catalog.BLL.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace MySiteRESTApi.Controllers
 {
     [Route("api/v1/categories")]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public class CategoriesApiController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

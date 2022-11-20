@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catalog.BLL\Catalog.BLL.csproj" />
+    <ProjectReference Include="..\RestApiTest\ClientRestApiGenerated\CategoriesProducstApiRestTest.csproj" />
   </ItemGroup>
 
 </Project>
