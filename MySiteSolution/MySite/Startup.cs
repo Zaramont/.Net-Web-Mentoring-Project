@@ -44,7 +44,7 @@ namespace MySite
             {
                 builder.AddSerilog(_serilogLogger);
             });
-
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<CatalogDataContext>(c =>
                    c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
             services.AddDbContext<ApplicationDbContext>(options =>
