@@ -9,15 +9,15 @@ namespace MyCatalogSite.Components
     {
         public IViewComponentResult Invoke()
         {
-            string controller = RouteData.Values["controller"].ToString();
-            string action = RouteData.Values["action"].ToString();
+            string controller = RouteData?.Values["controller"]?.ToString();
+            string action = RouteData?.Values["action"]?.ToString();
 
             var list = new List<BreadCrumbsPart>();
 
-            if (controller.Equals("Home")) return View(list);
+            if (controller == null || controller.Equals("Home")) return View(list);
             list.Add(new BreadCrumbsPart { Text = "Home", RelativePath = "/" });
 
-            if (action.Equals("Index"))
+            if (action == null || action.Equals("Index"))
             {
                 list.Add(new BreadCrumbsPart { Text = controller, RelativePath = $"/{controller}", IsLastPart = true });
             }
