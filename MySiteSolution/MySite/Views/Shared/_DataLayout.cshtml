@@ -1,23 +1,18 @@
-﻿@using MyCatalogSite.Components
-@using Microsoft.AspNetCore.Identity
-@using MyCatalogSite.Models
-
-@inject SignInManager<IdentityUser> SignInManager
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MySite</title>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 </head>
 <body>
     @if (IsSectionDefined("Header"))
     {
         @RenderSection("Header", required: false)
-    } else
+    }
+    else
     {
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -33,8 +28,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            @if (SignInManager.IsSignedIn(User))
-                            {
+                            
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
                                 </li>
@@ -44,7 +38,7 @@
                                 <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Administrator" asp-action="Index">Admin page</a>
                                 </li>
-                            }
+                            
                         </ul>
                     </div>
                     <div class="navbar-collapse flex-row-reverse">
@@ -55,29 +49,16 @@
                 </div>
             </nav>
         </header>
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <p>Explore <a href="~/Products">Products</a> or <a href="~/Categories">Categories</a>.</p>
+        </div>
     }
+
     <div class="container">
         <main role="main" class="pb-3">
-            @await Component.InvokeAsync(nameof(BreadCrumbs))
             @RenderBody()
         </main>
     </div>
-
-    @if (IsSectionDefined("Footer"))
-    {
-        @RenderSection("Footer", required: false)
-    } else
-    {
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2022 - MySite
-            </div>
-        </footer>
-    }
-    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

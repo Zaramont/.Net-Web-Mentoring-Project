@@ -44,13 +44,14 @@ namespace MySite
             {
                 builder.AddSerilog(_serilogLogger);
             });
+
             services.AddDbContext<CatalogDataContext>(c =>
                    c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("IdentityDB")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
@@ -80,7 +81,7 @@ namespace MySite
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -102,6 +103,8 @@ namespace MySite
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            CreateAdministratorRole(serviceProvider);
 
             app.UseWhen(context => context.Request.Path.ToString().StartsWith("/Categories/Image/", StringComparison.OrdinalIgnoreCase), appBuilder =>
             {
@@ -138,6 +141,15 @@ namespace MySite
                 }
 
                 _serilogLogger.Information($"Additional information: configValues - {sb.ToString()}");
+            }
+
+            void CreateAdministratorRole(IServiceProvider serviceProvider)
+            {
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                if (!roleManager.RoleExistsAsync("Administrator").Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole("Administrator")).Wait();
+                }
             }
         }
     }
