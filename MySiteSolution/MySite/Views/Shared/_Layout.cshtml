@@ -1,4 +1,8 @@
 ﻿@using MyCatalogSite.Components
+@using Microsoft.AspNetCore.Identity
+@using MyCatalogSite.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,16 +27,26 @@
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
-                            </li>
+                            
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
+                                </li>
+                            }
                         </ul>
                     </div>
+                    <partial name="_LoginPartial" />
                 </div>
             </nav>
         </header>

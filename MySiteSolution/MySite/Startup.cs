@@ -3,16 +3,26 @@ using Catalog.DAL.DataContext;
 using Catalog.DAL.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
+using MyCatalogSite.Data;
+using MyCatalogSite.Filters;
+using MyCatalogSite.Middleware;
+using MyCatalogSite.Models;
+using MyCatalogSite.Services;
 using Serilog;
 using System;
+using System.Linq;
 using System.Text;
-using MyCatalogSite.Middleware;
-using MyCatalogSite.Filters;
+
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MySite
 {
@@ -34,7 +44,8 @@ namespace MySite
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddLogging(builder => {
+            services.AddLogging(builder =>
+            {
                 builder.AddSerilog(_serilogLogger);
             });
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -48,6 +59,39 @@ namespace MySite
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<LogActionFilter>();
             services.AddSwaggerDocument();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddMvc();
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(o => { });
+
+            /*var initialScopes = Configuration.GetValue<string>("DownstreamApi:Scopes")?.Split(' ');
+            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
+                    .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+                        .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
+                        .AddInMemoryTokenCaches();
+            */
+
+            services.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
+
+            
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +114,8 @@ namespace MySite
             app.UseSwaggerUi3();
 
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseWhen(context => context.Request.Path.ToString().StartsWith("/Categories/Image/", StringComparison.OrdinalIgnoreCase), appBuilder =>
@@ -103,7 +149,7 @@ namespace MySite
                 {
                     sb.AppendLine($"{item.Key}: {item.Value}");
                 }
-                
+
                 _serilogLogger.Information($"Additional information: configValues - {sb.ToString()}");
             }
         }
