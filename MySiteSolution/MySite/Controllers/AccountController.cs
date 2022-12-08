@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+/*// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Security.Claims;
@@ -271,7 +271,7 @@ namespace MyCatalogSite.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null /*|| !(await _userManager.IsEmailConfirmedAsync(user))*/)
+                if (user == null) //|| !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -564,4 +564,4 @@ namespace MyCatalogSite.Controllers
 
         #endregion
     }
-}
+}*/

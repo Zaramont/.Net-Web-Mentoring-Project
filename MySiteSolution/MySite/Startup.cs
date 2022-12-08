@@ -1,6 +1,8 @@
 using Catalog.BLL.Services;
 using Catalog.DAL.DataContext;
 using Catalog.DAL.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,20 +11,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.UI;
 using MyCatalogSite.Data;
 using MyCatalogSite.Filters;
 using MyCatalogSite.Middleware;
-using MyCatalogSite.Models;
 using MyCatalogSite.Services;
 using Serilog;
 using System;
 using System.Linq;
 using System.Text;
-
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MySite
 {
@@ -48,9 +44,24 @@ namespace MySite
             {
                 builder.AddSerilog(_serilogLogger);
             });
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<CatalogDataContext>(c =>
                    c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityDB")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
+
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
+                .AddAzureAD(options =>
+                {
+                    Configuration.Bind("AzureAd", options);
+                    options.CookieSchemeName = IdentityConstants.ExternalScheme;
+                });
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISupplierService, SupplierService>();
@@ -60,38 +71,12 @@ namespace MySite
             services.AddScoped<LogActionFilter>();
             services.AddSwaggerDocument();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddMvc();
-
-            services.AddAuthentication(o =>
-            {
-                o.DefaultScheme = IdentityConstants.ApplicationScheme;
-                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies(o => { });
-
-            /*var initialScopes = Configuration.GetValue<string>("DownstreamApi:Scopes")?.Split(' ');
-            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
-                    .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
-                        .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
-                        .AddInMemoryTokenCaches();
-            */
-
-            services.AddIdentityCore<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager()
-                .AddDefaultTokenProviders();
-
-            
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.AddRazorPages();
 
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,11 +93,11 @@ namespace MySite
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -135,6 +120,8 @@ namespace MySite
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
             });
 
             WriteAdditionalInfoToLog();
