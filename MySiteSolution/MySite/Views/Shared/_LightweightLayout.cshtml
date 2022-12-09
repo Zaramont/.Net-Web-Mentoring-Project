@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+
+<div>
+<img src="https://miro.medium.com/max/1050/1*Qy9HeVwrfnOTS3sptJ--hw.png"
+    alt="asp net core image" 
+    class="pt-1 d-block mx-auto img-fluid">
+</div>
+@if (IsSectionDefined("Header"))
+{
+    IgnoreSection("Header");
+}
+
+@RenderBody()
+
+@if (IsSectionDefined("Footer"))
+{
+    IgnoreSection("Footer");
+}
