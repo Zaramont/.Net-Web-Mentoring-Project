@@ -7,7 +7,7 @@ namespace Catalog.BLL.Services
     {
         IList<Category> GetCategories();
         Category GetCategoryById(int id);
-        void AddCategory(Category entity);
+        Category AddCategory(Category entity);
         void DeleteCategory(int id);
         void UpdateCategory(Category entity);
     }
