@@ -77,6 +77,14 @@ namespace MySite
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.AddRazorPages();
 
+            services.AddWebOptimizer(pipeline =>
+            {
+                pipeline.AddCssBundle("/css/bundle.css", "css/**/*.css").UseContentRoot(); ;
+                pipeline.MinifyCssFiles();
+                pipeline.MinifyJsFiles();
+                pipeline.AddJavaScriptBundle("/js/bundle.js", "*.js").UseContentRoot(); ;
+            });
+
 
         }
 
@@ -98,6 +106,7 @@ namespace MySite
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
+            app.UseWebOptimizer();
             app.UseStaticFiles();
             app.UseRouting();
 
