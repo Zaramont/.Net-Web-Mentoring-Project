@@ -7,6 +7,12 @@
 		<MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 	</PropertyGroup>
 
+  
+	<ItemGroup>
+	  <_WebToolingArtifacts Remove="Properties\PublishProfiles\Linux MyCatalogSite20221217165214 - Zip Deploy.pubxml" />
+	  <_WebToolingArtifacts Remove="Properties\PublishProfiles\Windows MyCatalogSite20221217155149 - Web Deploy.pubxml" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.372" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
