@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace MySite
@@ -15,6 +16,9 @@ namespace MySite
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureAppConfiguration((hostContext, builder) => 
+                {
+                    builder.AddUserSecrets<Program>();
                 });
     }
 }

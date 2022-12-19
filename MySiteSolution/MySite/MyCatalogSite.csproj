@@ -5,7 +5,8 @@
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
-	</PropertyGroup>
+	  <UserSecretsId>7aa87e83-cbd5-43c1-8b64-9526ffed2260</UserSecretsId>
+  </PropertyGroup>
 
   
 	<ItemGroup>

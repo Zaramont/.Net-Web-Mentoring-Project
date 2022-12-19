@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,10 +46,11 @@ namespace MySite
                 builder.AddSerilog(_serilogLogger);
             });
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+                        
             services.AddDbContext<CatalogDataContext>(c =>
-                   c.UseSqlServer(Configuration.GetConnectionString("CatalogDatabase")));
+                   c.UseSqlServer(GetSqlConnectionStringWithPassword("CatalogDatabase", "CatalogDatabaseDbPassword")));
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IdentityDB")));
+                options.UseSqlServer(GetSqlConnectionStringWithPassword("IdentityDB", "IdentityDatabasePassword")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddRoles<IdentityRole>()
@@ -85,7 +87,14 @@ namespace MySite
                 pipeline.AddJavaScriptBundle("/js/bundle.js", "*.js").UseContentRoot(); ;
             });
 
+        }
 
+        private string GetSqlConnectionStringWithPassword(string connectionName, string passwordKeyName)
+        {
+            var conStrBuilder = new SqlConnectionStringBuilder(
+                        Configuration.GetConnectionString(connectionName));
+            conStrBuilder.Password = Configuration[passwordKeyName];
+            return conStrBuilder.ConnectionString;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
